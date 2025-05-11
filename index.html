@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QR Code Generator & Email Sender</title>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    (function() {
+      emailjs.init("TZAMZbXNNy6NIiod8"); // Your EmailJS Public Key
+    })();
+  </script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      min-height: 100vh;
+      background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    input, textarea, button {
+      padding: 10px;
+      margin: 8px;
+      width: 80%;
+      max-width: 300px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: white;
+      color: #333;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #qrcode {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>QR Code Generator + Email Sender</h1>
+  <form id="qrForm">
+    <input type="text" id="name" placeholder="Your Name" required><br>
+    <input type="email" id="email" placeholder="Your Email" required><br>
+    <input type="text" id="phone" placeholder="Your Phone" required><br>
+    <input type="text" id="company" placeholder="Your Company (Optional)"><br>
+    <textarea id="message" placeholder="Your Message or Website URL (Optional)"></textarea><br>
+    <button type="submit">Generate QR & Send Email</button>
+  </form>
+
+  <div id="qrcode"></div>
+
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+  <script>
+    document.getElementById("qrForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      const company = document.getElementById("company").value || "N/A";
+      const message = document.getElementById("message").value || "N/A";
+
+      const qrText = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nCompany: ${company}\nMessage: ${message}`;
+      document.getElementById("qrcode").innerHTML = "";
+      new QRCode(document.getElementById("qrcode"), {
+        text: qrText,
+        width: 200,
+        height: 200
+      });
+
+      emailjs.send("service_w4jmqof", "template_vqx6alo", {
+        name: name,
+        email: email,
+        phone: phone,
+        company: company,
+        message: message
+      }).then(function(response) {
+        alert("Details sent to Thipiga62@gmail.com successfully!");
+      }, function(error) {
+        alert("Failed to send email: " + JSON.stringify(error));
+      });
+    });
+  </script>
+
+</body>
+</html>
